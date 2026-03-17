@@ -1272,161 +1272,25 @@ TEMPLATE_PRINCIPAL = """
 ""”
 
 
-
-TEMPLATE_AJUSTES ="""
+TEMPLATE_AJUSTES = """
 <!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8">
-<title>Ajustes - Sport Spot</title>
+  <title>Ajustes · Sport Spot</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    * { box-sizing:border-box; font-family: system-ui, -apple-system, Segoe UI, sans-serif; }
-    body { margin:0; background: radial-gradient(circle at top left, #4caf50 0, #1b5e20 40%, #0f2d1f 100%); color:#f5f5f5; }
-   .app { max-width: 1200px; margin:0 auto; padding:16px; }
-    a { color:#c8e6c9; }
-    .card { background: rgba(3,18,10,0.9); border-radius:18px; padding:16px; border:1px solid rgba(129,199,132,0.35); box-shadow: 0 12px 30px rgba(0,0,0,0.4); margin: 14px 0; }
-    h1 { margin: 0 0 10px; font-size: 1.2rem; text-transform: uppercase; letter-spacing: .08em; }
-    h2 { margin:0 0 10px; font-size:1rem; }
-    .row { display:flex; gap:10px; flex-wrap: wrap; align-items: center; }
-    label { font-size:.85rem; opacity:.9; }
-    input, select { padding:7px 12px; border-radius:999px; border:1px solid rgba(200,230,201,.35); background: rgba(0,0,0,.35); color:#f1f8e9; font-size: .9rem; }
-    .btn { border:none; border-radius:999px; padding:7px 14px; font-size:.85rem; cursor:pointer; white-space:nowrap;}
-    .btn-primary { background: linear-gradient(135deg, #cddc39, #8bc34a); color:#1b5e20; font-weight:800; }
-    .btn-outline { background: transparent; color:#c8e6c9; border:1px solid rgba(200,230,201,.35); }
-    .btn-danger { background: linear-gradient(135deg, #d32f2f, #b71c1c); color:#fff; font-weight:800; }
-    table { width:100%; border-collapse: collapse; font-size:.85rem; background: rgba(0,0,0,.25); border-radius: 12px; overflow:hidden; }
-    th, td { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,0.06); vertical-align: middle; }
-    th { text-align:left; background: rgba(0,0,0,.4); }
-    .img { width:70px; height:44px; border-radius: 10px; overflow:hidden; background: rgba(0,0,0,.35); border:1px solid rgba(255,255,255,.06); }
-    .img img{ width:100%; height:100%; object-fit: cover; }
-    .flash { margin: 10px 0; padding: 10px 14px; border-radius: 999px; background: rgba(0,0,0,0.82); border:1px solid rgba(200,230,201,.5); }
-    .flash.ok{ border-color: rgba(129,199,132,.8); color:#e8f5e9; }
-    .flash.error{ border-color:#ef9a9a; color:#ffebee; }
-    small { opacity:.8; }
+    * { box-sizing:border-box; font-family: system-ui, sans-serif; }
+    body { margin:0; background: #1b5e20; color:#f5f5f5; }
+    .app-container { max-width: 1200px; margin:0 auto; padding:16px; }
   </style>
 </head>
 <body>
-<div class="app">
-  <a href="{{ url_for('index') }}">&larr; Volver</a>
-  <h1>Ajustes</h1>
-
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      {% for category, msg in messages %}
-        <div class="flash {{ category }}">{{ msg }}</div>
-      {% endfor %}
-    {% endif %}
-  {% endwith %}
-
-  <div class="card">
-    <h2>Clave de regalías</h2>
-    <form method="post">
-      <input type="hidden" name="action" value="update_regalia">
-      <div class="row">
-        <div><small>Actual (oculta):</small> <code>{{ regalia_code }}</code></div>
-      </div>
-      <div class="row" style="margin-top:8px;">
-        <label>Nueva clave:</label>
-        <input type="password" name="regalia_code" placeholder="Escriba nueva clave">
-        <button class="btn btn-primary" type="submit">Guardar</button>
-      </div>
-    </form>
+  <div class="app-container">
+    <h1>Panel de Ajustes</h1>
+    <a href="/">Volver</a>
   </div>
-
-  <div class="card">
-    <h2>Agregar producto</h2>
-    <form method="post" enctype="multipart/form-data">
-      <input type="hidden" name="action" value="add_product">
-      <div class="row">
-        <label>Nombre</label>
-        <input name="name" placeholder="Ej: Nachos">
-        <label>Categoría</label>
-        <select name="category">
-          <option value="comida">comida</option>
-          <option value="bebida">bebida</option>
-          <option value="extra">extra</option>
-        </select>
-      </div>
-      <div class="row" style="margin-top:8px;">
-        <label>Precio venta</label>
-        <input name="sale_price" type="number" placeholder="₡">
-        <label>Costo</label>
-        <input name="cost_price" type="number" placeholder="₡">
-        <label>Stock</label>
-        <input name="stock" type="number" placeholder="Ej: 30">
-      </div>
-      <div class="row" style="margin-top:8px;">
-        <label>Imagen (archivo)</label>
-        <input name="image" type="file" accept="image/*">
-        <button class="btn btn-primary" type="submit">Agregar</button>
-      </div>
-      <small>Si no subes imagen, se usa un placeholder.</small>
-    </form>
-  </div>
-
-  <div class="card">
-    <h2>Inventario (editar)</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Foto</th>
-          <th>Nombre</th>
-          <th>Categoría</th>
-          <th>Venta</th>
-          <th>Costo</th>
-          <th>Stock</th>
-          <th>Actualizar</th>
-          <th>Borrar</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for p in products %}
-        <tr>
-          <td class="img"><img src="{{ url_for('product_image', product_id=p['id']) }}" alt=""></td>
-          <td>
-            <form method="post" enctype="multipart/form-data" style="display:grid; gap:6px;">
-              <input type="hidden" name="action" value="update_product">
-              <input type="hidden" name="product_id" value="{{ p['id'] }}">
-              <input name="name" value="{{ p['name'] }}">
-          </td>
-          <td>
-              <select name="category">
-                <option value="comida" {% if p['category']=='comida' %}selected{% endif %}>comida</option>
-                <option value="bebida" {% if p['category']=='bebida' %}selected{% endif %}>bebida</option>
-                <option value="extra" {% if p['category']=='extra' %}selected{% endif %}>extra</option>
-              </select>
-          </td>
-          <td><input name="sale_price" type="number" value="{{ p['sale_price'] }}"></td>
-          <td><input name="cost_price" type="number" value="{{ p['cost_price'] }}"></td>
-          <td><input name="stock" type="number" value="{{ p['stock'] }}"></td>
-          <td>
-              <div class="row">
-                <label><small>Reemplazar imagen</small></label>
-                <input type="hidden" name="set_img" value="0">
-                <input type="checkbox" onclick="this.form.set_img.value = this.checked ? '1' : '0'">
-                <input name="image" type="file" accept="image/*">
-                <button class="btn btn-primary" type="submit">Guardar</button>
-              </div>
-            </form>
-          </td>
-          <td>
-            <form method="post" onsubmit="return confirm('¿Eliminar producto?')">
-              <input type="hidden" name="action" value="delete_product">
-              <input type="hidden" name="product_id" value="{{ p['id'] }}">
-              <button class="btn btn-danger" type="submit">Eliminar</button>
-            </form>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    <small>“Costo” es lo que te costó a ti, “Venta” es el precio al cliente. La ganancia se calcula en reportes.</small>
-  </div>
-</div>
 </body>
-</html>
-"""
 
 
 TEMPLATE_REPORTES = """

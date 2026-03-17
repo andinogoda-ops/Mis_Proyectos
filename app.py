@@ -1273,7 +1273,7 @@ TEMPLATE_PRINCIPAL = """
 
 
 
-TEMPLATE_AJUSTES = """
+TEMPLATE_AJUSTES ="""
 <!doctype html>
 <html lang="es">
 <head>
@@ -1283,7 +1283,7 @@ TEMPLATE_AJUSTES = """
   <style>
     * { box-sizing:border-box; font-family: system-ui, -apple-system, Segoe UI, sans-serif; }
     body { margin:0; background: radial-gradient(circle at top left, #4caf50 0, #1b5e20 40%, #0f2d1f 100%); color:#f5f5f5; }
-    .app { max-width: 1200px; margin:0 auto; padding:16px; }
+   .app { max-width: 1200px; margin:0 auto; padding:16px; }
     a { color:#c8e6c9; }
     .card { background: rgba(3,18,10,0.9); border-radius:18px; padding:16px; border:1px solid rgba(129,199,132,0.35); box-shadow: 0 12px 30px rgba(0,0,0,0.4); margin: 14px 0; }
     h1 { margin: 0 0 10px; font-size: 1.2rem; text-transform: uppercase; letter-spacing: .08em; }

@@ -1271,13 +1271,12 @@ TEMPLATE_PRINCIPAL = """
 </html>
 ""”
 
-
-TEMPLATE_AJUSTES = """
+TEMPLATE_AJUSTES ="""
 <!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <title>Ajustes · Sport Spot</title>
+  <title>Ajustes - Sport Spot</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
     * { box-sizing:border-box; font-family: system-ui, sans-serif; }

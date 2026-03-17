@@ -1025,232 +1025,252 @@ def exportar():
 # ============================================================
 # Templates
 # ============================================================
-TEMPLATE_PRINCIPAL = """
+ TEMPLATE_PRINCIPAL = """
 <!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <title>Sport Spot - Punto de Venta</title>
+  <title>Sport Spot | POS Pro</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    * { box-sizing: border-box; font-family: system-ui, -apple-system, Segoe UI, sans-serif; }
-    body { margin:0; background: radial-gradient(circle at top left, #4caf50 0, #1b5e20 40%, #0f2d1f 100%); color:#f5f5f5; }
-    .app { max-width: 1350px; margin:0 auto; padding: 14px; }
-    header { display:flex; justify-content:space-between; align-items:center; gap:12px; padding: 12px 16px; margin-bottom: 12px;
-      background: rgba(0,0,0,0.35); border-radius: 18px; backdrop-filter: blur(10px); box-shadow: 0 10px 25px rgba(0,0,0,0.35); }
-    .title { font-size: 1.2rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase;}
-    .subtitle { font-size: .8rem; opacity:.85;}
-    .links a { text-decoration:none; color:#c8e6c9; font-size:.85rem; margin-left: 12px; padding: 6px 12px; border-radius: 999px;
-      border:1px solid rgba(200,230,201,.35); background: rgba(255,255,255,0.02);}
-    .grid { display:grid; grid-template-columns: minmax(0, 2.3fr) minmax(0, 1.2fr); gap: 12px; }
-    @media (max-width: 980px){ .grid{ grid-template-columns: 1fr; } }
-    .card { background: rgba(3,18,10,0.85); border-radius: 18px; padding: 12px; box-shadow: 0 12px 30px rgba(0,0,0,0.35);
-      border: 1px solid rgba(129,199,132,0.3); backdrop-filter: blur(12px); }
-    h2 { margin:0 0 10px; font-size: 1rem; text-transform: uppercase; letter-spacing:.06em; color:#c5e1a5; }
-
-    /* MÁS grande: más columnas + más alto */
-    .menu-grid {
-      display:grid;
-      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-      gap: 10px;
-      max-height: 820px;
-      overflow-y: auto;
-      padding-right: 4px;
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+    body { 
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: radial-gradient(circle at top left, #166534 0%, #064e3b 40%, #020617 100%);
+      min-height: 100vh;
     }
-    .item { background: rgba(21,46,27,0.95); border: 1px solid rgba(129,199,132,.25); border-radius: 14px; padding: 10px; display:flex; flex-direction:column; gap:6px;}
-    .item.disabled { opacity: .45; }
-    .imgbox { width:100%; height:120px; border-radius: 12px; overflow:hidden; background: rgba(0,0,0,.35); border:1px solid rgba(255,255,255,.06); }
-    .imgbox img { width:100%; height:100%; object-fit: cover; display:block; }
-    .row { display:flex; justify-content:space-between; gap:6px; align-items:baseline; }
-    .name { font-size: .92rem; font-weight: 650; }
-    .price { font-size: .92rem; color:#dcedc8; }
-    .meta { display:flex; justify-content:space-between; align-items:center; font-size:.75rem; opacity:.9; }
-    .tag { font-size: .68rem; text-transform: uppercase; letter-spacing:.08em; padding: 2px 8px; border-radius: 999px; background: rgba(205,220,57,.12); color:#e6ee9c; }
-    .stock { color:#c5e1a5; }
-
-    .btn { border: none; border-radius: 999px; padding: 7px 12px; font-size: .82rem; cursor:pointer; }
-    .btn-primary { background: linear-gradient(135deg, #cddc39, #8bc34a); color:#1b5e20; font-weight: 700;}
-    .btn-outline { background: transparent; color:#c8e6c9; border:1px solid rgba(200,230,201,.4); }
-    .btn-danger { background: linear-gradient(135deg, #d32f2f, #b71c1c); color:#fff; font-weight:700; }
-    .btn-ghost { background: transparent; color: inherit; }
-
-    .cuentas { display:flex; flex-wrap:wrap; gap:8px; margin-bottom: 10px; }
-    .pill { border:none; padding: 6px 12px; border-radius: 999px; font-size:.82rem; cursor:pointer; background: rgba(129,199,132,.15); color:#e8f5e9; }
-    .pill.active { background:#cddc39; color:#1b5e20; font-weight:800; }
-    .pill .t { font-size:.72rem; opacity:.85; text-transform: uppercase; margin-left: 6px; }
-
-    .input { width:100%; padding:7px 12px; border-radius: 999px; border:1px solid rgba(200,230,201,.35); background: rgba(0,0,0,.3); color:#f1f8e9; font-size: .9rem; }
-    .inline { display:flex; gap:8px; flex-wrap: wrap; }
-    .cart { max-height: 360px; overflow-y:auto; border-radius: 12px; background: rgba(0,0,0,.3); padding: 4px 0; margin: 8px 0 10px; }
-    .cartrow { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; padding: 8px 10px; font-size: .9rem; }
-    .cartrow:nth-child(odd){ background: rgba(255,255,255,0.02); }
-    .tipo { font-size:.68rem; text-transform: uppercase; letter-spacing:.08em; opacity:.8; margin-right: 6px; }
-    .deliv { font-size:.78rem; opacity:.9; display:flex; align-items:center; gap:6px; }
-
-    .total { font-size: 1.35rem; font-weight: 900; color:#ffeb3b; }
-    .sub { font-size: .8rem; opacity:.85; }
-
-    .paybox { background: rgba(0,0,0,.35); border-radius: 12px; padding: 10px; display:grid; gap:10px; }
-    .paygrid { display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    @media (max-width: 520px){ .paygrid{ grid-template-columns: 1fr; } }
-    label { font-size: .8rem; opacity: .9; display:block; margin-bottom: 4px; }
-    select, input[type="password"]{ width:100%; padding:7px 12px; border-radius: 999px; border:1px solid rgba(200,230,201,.35); background: rgba(0,0,0,.3); color:#f1f8e9; font-size: .9rem; }
-
-    .flash-wrap { position: fixed; bottom: 12px; left:0; right:0; display:flex; justify-content:center; pointer-events:none; }
-    .flash { pointer-events:auto; max-width: 980px; margin: 0 14px; padding: 10px 14px; border-radius: 999px; font-size:.9rem; background: rgba(0,0,0,.82); border:1px solid rgba(200,230,201,.5); }
-    .flash.ok { border-color: rgba(129,199,132,.8); color:#e8f5e9; }
-    .flash.error { border-color: #ef9a9a; color:#ffebee; }
+    .glass {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
   </style>
 </head>
-<body>
-<div class="app">
-  <header>
-    <div>
-      <div class="title">Sport Spot · Punto de venta</div>
-      <div class="subtitle">Inventario + Costos + Ganancias · Pago con vuelto · Cocina (despacho)</div>
+<body class="text-slate-200 p-4 lg:p-6">
+
+
+<div class="max-w-[1600px] mx-auto">
+  <header class="glass rounded-3xl p-5 mb-6 flex flex-col md:flex-row justify-between items-center gap-4 shadow-2xl">
+    <div class="flex items-center gap-4">
+      <div class="bg-green-500 p-3 rounded-2xl shadow-lg shadow-green-500/20">
+        <i data-lucide="layout-dashboard" class="text-white w-6 h-6"></i>
+      </div>
+      <div>
+        <h1 class="text-xl font-extrabold tracking-tight text-white">SPORT SPOT <span class="text-green-400">POS</span></h1>
+        <p class="text-xs text-slate-400 font-medium uppercase tracking-widest">Sistema de Gestión e Inventarios</p>
+      </div>
     </div>
-    <div class="links">
-      <a href="{{ url_for('ajustes') }}">Ajustes</a>
-      <a href="{{ url_for('reportes') }}">Reportes</a>
-      <a href="{{ url_for('cocina') }}">Cocina</a>
-    </div>
+    <nav class="flex gap-2">
+      <a href="{{ url_for('cocina') }}" class="flex items-center gap-2 px-4 py-2 rounded-xl glass hover:bg-white/10 transition-all text-sm font-semibold">
+        <i data-lucide="utensils" class="w-4 h-4 text-orange-400"></i> Cocina
+      </a>
+      <a href="{{ url_for('reportes') }}" class="flex items-center gap-2 px-4 py-2 rounded-xl glass hover:bg-white/10 transition-all text-sm font-semibold">
+        <i data-lucide="bar-chart-3" class="w-4 h-4 text-blue-400"></i> Reportes
+      </a>
+      <a href="{{ url_for('ajustes') }}" class="flex items-center gap-2 px-4 py-2 rounded-xl glass hover:bg-white/10 transition-all text-sm font-semibold">
+        <i data-lucide="settings" class="w-4 h-4 text-slate-400"></i> Ajustes
+      </a>
+    </nav>
   </header>
 
-  <div class="grid">
-    <section class="card">
-      <h2>Menú</h2>
-      <div class="menu-grid">
-        {% for p in products %}
-          {% set sin_stock = p['stock'] <= 0 %}
-          <div class="item {% if sin_stock %}disabled{% endif %}">
-            <div class="imgbox">
-              <img src="{{ url_for('product_image', product_id=p['id']) }}" alt="">
-            </div>
-            <div class="row">
-              <div class="name">{{ p['name'] }}</div>
-              <div class="price">₡{{ p['sale_price'] }}</div>
-            </div>
-            <div class="meta">
-              <div class="tag">{{ p['category'] }}</div>
-              <div class="stock">Stock: {{ p['stock'] }}</div>
-            </div>
-            <form method="post" action="{{ url_for('agregar_item') }}">
-              <input type="hidden" name="product_id" value="{{ p['id'] }}">
-              <button class="btn btn-primary" type="submit" {% if sin_stock %}disabled{% endif %}>Agregar</button>
-            </form>
-          </div>
-        {% endfor %}
+
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    
+    <main class="lg:col-span-8">
+      <div class="flex items-center justify-between mb-6 px-2">
+        <h2 class="text-lg font-bold flex items-center gap-2">
+          <i data-lucide="shopping-bag" class="text-green-400"></i> Catálogo de Productos
+        </h2>
+        <div class="text-xs bg-white/5 px-3 py-1 rounded-full border border-white/10 text-slate-400">
+          {{ products|length }} productos disponibles
+        </div>
       </div>
-    </section>
 
-    <section class="card">
-      <h2>Cuentas y carrito</h2>
 
-      <div class="cuentas">
-        {% for nombre, data in cuentas.items() %}
-          <form method="post" action="{{ url_for('seleccionar_cuenta') }}">
-            <input type="hidden" name="cuenta" value="{{ nombre }}">
-            <button class="pill {% if nombre == cuenta_actual %}active{% endif %}" type="submit">
-              {{ nombre }}
-              <span class="t">{{ data['items']|length }} ítems</span>
+      <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 custom-scrollbar overflow-y-auto max-h-[75vh] pr-2">
+        {% for p in products %}
+        {% set sin_stock = p['stock'] <= 0 %}
+        <div class="glass rounded-2xl p-3 group hover:border-green-500/50 transition-all duration-300 {% if sin_stock %}opacity-50 grayscale{% endif %}">
+          <div class="relative h-32 rounded-xl overflow-hidden mb-3 shadow-inner bg-black/20">
+            <img src="{{ url_for('product_image', product_id=p['id']) }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+            <div class="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-2 py-1 rounded-lg text-[10px] font-bold border border-white/10">
+              STOCK: {{ p['stock'] }}
+            </div>
+          </div>
+          <div class="flex justify-between items-start mb-2">
+            <div>
+              <h3 class="font-bold text-sm leading-tight mb-1">{{ p['name'] }}</h3>
+              <span class="text-[10px] uppercase font-bold text-green-400 tracking-tighter">{{ p['category'] }}</span>
+            </div>
+            <span class="font-extrabold text-sm text-white">₡{{ p['sale_price'] }}</span>
+          </div>
+          <form method="post" action="{{ url_for('agregar_item') }}">
+            <input type="hidden" name="product_id" value="{{ p['id'] }}">
+            <button type="submit" {% if sin_stock %}disabled{% endif %} 
+              class="w-full py-2 rounded-xl bg-green-500 hover:bg-green-400 text-green-950 font-bold text-xs transition-colors shadow-lg shadow-green-500/20 active:scale-95 disabled:bg-slate-700 disabled:text-slate-500">
+              AGREGAR
             </button>
           </form>
+        </div>
         {% endfor %}
       </div>
+    </main>
 
-      <form class="inline" method="post" action="{{ url_for('nueva_cuenta') }}">
-        <input class="input" type="text" name="nombre_cuenta" placeholder="Nombre de nueva cuenta">
-        <button class="btn btn-primary" type="submit">Abrir</button>
-      </form>
 
-      <form style="margin-top:8px" method="post" action="{{ url_for('eliminar_cuenta') }}">
-        <input type="hidden" name="cuenta_eliminar" value="{{ cuenta_actual }}">
-        <button class="btn btn-outline" type="submit">Borrar cuenta (si vacía)</button>
-      </form>
+    <aside class="lg:col-span-4 space-y-6">
+      <div class="glass rounded-3xl p-6 shadow-2xl sticky top-6">
+        <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+          <i data-lucide="receipt" class="text-blue-400"></i> Cuenta Actual
+        </h2>
 
-      <div class="cart">
-        {% if cuentas[cuenta_actual]['items'] %}
-          {% for item in cuentas[cuenta_actual]['items'] %}
-            <div class="cartrow">
-              <div>
-                <div><span class="tipo">{{ item.category }}</span>{{ item.name }}</div>
-                <div class="deliv">
-                  <form method="post" action="{{ url_for('toggle_item_delivered') }}">
-                    <input type="hidden" name="index" value="{{ loop.index0 }}">
-                    <button class="btn btn-outline" type="submit">
-                      {% if item.delivered %}✅ Entregado{% else %}⬜ Pendiente{% endif %}
-                    </button>
-                  </form>
-                  <span style="opacity:.8;">(esto se guarda al cobrar)</span>
+
+        <div class="flex flex-wrap gap-2 mb-4">
+          {% for nombre, data in cuentas.items() %}
+          <form method="post" action="{{ url_for('seleccionar_cuenta') }}">
+            <input type="hidden" name="cuenta" value="{{ nombre }}">
+            <button type="submit" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all
+              {% if nombre == cuenta_actual %}
+                bg-blue-500 text-white shadow-lg shadow-blue-500/30
+              {% else %}
+                glass hover:bg-white/10 text-slate-400
+              {% endif %}">
+              {{ nombre }} <span class="opacity-60 ml-1">{{ data['items']|length }}</span>
+            </button>
+          </form>
+          {% endfor %}
+        </div>
+
+
+        <div class="flex gap-2 mb-6">
+          <form class="flex-1 flex gap-2" method="post" action="{{ url_for('nueva_cuenta') }}">
+            <input class="flex-1 bg-black/20 border border-white/10 rounded-xl px-3 py-2 text-xs focus:border-blue-500 outline-none transition-all" 
+              type="text" name="nombre_cuenta" placeholder="Nueva mesa/cuenta...">
+            <button class="bg-white/10 hover:bg-white/20 p-2 rounded-xl transition-all" type="submit">
+              <i data-lucide="plus" class="w-4 h-4"></i>
+            </button>
+          </form>
+          <form method="post" action="{{ url_for('eliminar_cuenta') }}">
+            <input type="hidden" name="cuenta_eliminar" value="{{ cuenta_actual }}">
+            <button class="p-2 rounded-xl bg-rose-500/10 hover:bg-rose-500 text-rose-500 hover:text-white transition-all border border-rose-500/20" type="submit">
+              <i data-lucide="trash-2" class="w-4 h-4"></i>
+            </button>
+          </form>
+        </div>
+
+
+        <div class="bg-black/20 rounded-2xl p-2 mb-6 min-h-[150px] max-h-[300px] overflow-y-auto custom-scrollbar">
+          {% if cuentas[cuenta_actual]['items'] %}
+            {% for item in cuentas[cuenta_actual]['items'] %}
+            <div class="flex justify-between items-center p-3 rounded-xl hover:bg-white/5 transition-all group">
+              <div class="flex-1">
+                <div class="flex items-center gap-2">
+                  <span class="text-[9px] bg-white/10 px-1.5 py-0.5 rounded text-slate-400 font-bold uppercase">{{ item.category }}</span>
+                  <span class="text-sm font-semibold">{{ item.name }}</span>
                 </div>
-              </div>
-              <div>
-                ₡{{ item.sale_price }}
-                <form style="display:inline" method="post" action="{{ url_for('eliminar_item') }}">
+                <form method="post" action="{{ url_for('toggle_item_delivered') }}" class="mt-1">
                   <input type="hidden" name="index" value="{{ loop.index0 }}">
-                  <button class="btn btn-ghost" type="submit">✕</button>
+                  <button type="submit" class="text-[10px] font-bold flex items-center gap-1 {% if item.delivered %}text-green-400{% else %}text-amber-500{% endif %}">
+                    <i data-lucide="{% if item.delivered %}check-circle{% else %}clock{% endif %}" class="w-3 h-3"></i>
+                    {% if item.delivered %}Entregado{% else %}Pendiente{% endif %}
+                  </button>
+                </form>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="text-sm font-bold text-white">₡{{ item.sale_price }}</span>
+                <form method="post" action="{{ url_for('eliminar_item') }}">
+                  <input type="hidden" name="index" value="{{ loop.index0 }}">
+                  <button type="submit" class="text-slate-500 hover:text-rose-500 transition-colors">
+                    <i data-lucide="x-circle" class="w-4 h-4"></i>
+                  </button>
                 </form>
               </div>
             </div>
-          {% endfor %}
-        {% else %}
-          <div class="cartrow"><div>Sin productos en esta cuenta.</div></div>
-        {% endif %}
-      </div>
-
-      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:8px;">
-        <div>
-          <div class="total">₡{{ total }}</div>
-          <div class="sub">Cuenta actual: {{ cuenta_actual }}</div>
+            {% endfor %}
+          {% else %}
+            <div class="h-full flex flex-col items-center justify-center text-slate-500 py-10">
+              <i data-lucide="shopping-cart" class="w-8 h-8 mb-2 opacity-20"></i>
+              <p class="text-xs font-medium italic">Cuenta vacía</p>
+            </div>
+          {% endif %}
         </div>
-      </div>
 
-      <form style="margin-top:10px" method="post" action="{{ url_for('cobrar') }}">
-        <div class="paybox">
-          <div class="paygrid">
-            <div>
-              <label>Método de pago</label>
-              <select name="payment_method">
-                <option value="efectivo">Efectivo</option>
-                <option value="tarjeta">Tarjeta</option>
-                <option value="sinpe">SINPE</option>
-              </select>
-            </div>
-            <div>
-              <label>Paga con (solo efectivo)</label>
-              <input class="input" name="cash_received" placeholder="Ej: 10000">
-            </div>
+
+        <div class="border-t border-white/10 pt-4 space-y-4">
+          <div class="flex justify-between items-end">
+            <span class="text-xs font-bold text-slate-400 uppercase tracking-widest">Total a pagar</span>
+            <span class="text-3xl font-black text-white leading-none">₡{{ total }}</span>
           </div>
 
-          <div class="paygrid">
-            <div>
-              <label>Regalía (opcional)</label>
-              <input type="password" name="regalia_code" placeholder="Clave de regalía">
-            </div>
-            <div style="opacity:.8; font-size:.82rem; align-self:end;">
-              Si la clave es correcta, se cobra como ₡0 al cliente.
-            </div>
-          </div>
 
-          <button class="btn btn-danger" type="submit">Cobrar</button>
+          <form method="post" action="{{ url_for('cobrar') }}" class="space-y-3">
+            <div class="grid grid-cols-2 gap-2">
+              <div class="space-y-1">
+                <label class="text-[10px] font-bold text-slate-500 uppercase ml-2">Pago</label>
+                <select name="payment_method" class="w-full bg-black/20 border border-white/10 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-green-500">
+                  <option value="efectivo">Efectivo</option>
+                  <option value="tarjeta">Tarjeta</option>
+                  <option value="sinpe">SINPE</option>
+                </select>
+              </div>
+              <div class="space-y-1">
+                <label class="text-[10px] font-bold text-slate-500 uppercase ml-2">Paga con</label>
+                <input name="cash_received" class="w-full bg-black/20 border border-white/10 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-green-500" placeholder="Ej: 5000">
+              </div>
+            </div>
+            <div class="space-y-1">
+              <label class="text-[10px] font-bold text-slate-500 uppercase ml-2">Código Regalía</label>
+              <input type="password" name="regalia_code" class="w-full bg-black/20 border border-white/10 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-yellow-500" placeholder="••••">
+            </div>
+            <button type="submit" class="w-full py-4 bg-green-500 hover:bg-green-400 text-green-950 font-black rounded-2xl shadow-xl shadow-green-500/20 transition-all active:scale-[0.98] flex items-center justify-center gap-2">
+              <i data-lucide="banknote" class="w-5 h-5"></i> FINALIZAR VENTA
+            </button>
+          </form>
         </div>
-      </form>
-    </section>
+      </div>
+    </aside>
   </div>
+
 
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
-      <div class="flash-wrap">
-        {% for category, msg in messages %}
-          <div class="flash {{ category }}">{{ msg }}</div>
-        {% endfor %}
+    <div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex flex-col gap-2 w-full max-w-md px-4">
+      {% for category, msg in messages %}
+      <div class="glass border-l-4 {% if category == 'ok' %}border-green-500 bg-green-500/10{% else %}border-rose-500 bg-rose-500/10{% endif %} p-4 rounded-2xl shadow-2xl flex items-center justify-between animate-bounce">
+        <p class="text-sm font-bold {% if category == 'ok' %}text-green-400{% else %}text-rose-400{% endif %}">{{ msg }}</p>
+        <button onclick="this.parentElement.remove()" class="text-white/50 hover:text-white">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
       </div>
+      {% endfor %}
+    </div>
     {% endif %}
   {% endwith %}
+
+
 </div>
+
+
+<script>
+  // Inicializar Iconos Lucide
+  lucide.createIcons();
+
+
+  // Auto-cerrar alertas flash después de 4 segundos
+  setTimeout(() => {
+    document.querySelectorAll('.animate-bounce').forEach(el => el.remove());
+  }, 4000);
+</script>
+
+
 </body>
 </html>
-"""
+""”
+
 
 
 TEMPLATE_AJUSTES = """
@@ -1644,5 +1664,6 @@ init_db()
 
 if __name__ == "__main__":
     import os
+    # Railway asigna un puerto dinámico, esto lo captura:
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)

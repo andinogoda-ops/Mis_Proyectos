@@ -1271,7 +1271,7 @@ TEMPLATE_PRINCIPAL = """
 </html>
 ""”
 
-TEMPLATE_AJUSTES ="""
+TEMPLATE_AJUSTES = """
 <!doctype html>
 <html lang="es">
 <head>

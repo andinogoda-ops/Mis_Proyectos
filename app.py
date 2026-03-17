@@ -1025,7 +1025,7 @@ def exportar():
 # ============================================================
 # Templates
 # ============================================================
- TEMPLATE_PRINCIPAL = """
+TEMPLATE_PRINCIPAL = """
 <!doctype html>
 <html lang="es">
 <head>

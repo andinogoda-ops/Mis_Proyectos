@@ -459,21 +459,27 @@ TEMPLATE_COCINA = """
       <a href="/" class="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-sm font-bold border border-white/10">Volver al POS</a>
     </div>
   </nav>
+
+
   <main class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
     {% for sid, data in cuentas.items() %}
     <div class="flex flex-col gap-2">
       <div class="ticket p-5 shadow-2xl rounded-t-sm">
         <div class="border-b-2 border-dashed border-slate-300 pb-3 mb-4">
           <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Cuenta</span>
-          <h2 class="text-xl font-black text-slate-900 leading-none">{{ data.account_name }}</h2>
+          <h2 class="text-xl font-black text-slate-900 leading-none">{{ data['account_name'] }}</h2>
         </div>
         <div class="space-y-3 mb-6">
-          {% for item in data.items %}
-          <div class="flex gap-2"><span class="font-bold text-slate-400">1x</span><p class="text-sm font-bold text-slate-800 leading-tight uppercase">{{ item.name }}</p></div>
+          {# Cambiamos data.items por data['items'] para evitar el error de método #}
+          {% for item in data['items'] %}
+          <div class="flex gap-2">
+            <span class="font-bold text-slate-400">1x</span>
+            <p class="text-sm font-bold text-slate-800 leading-tight uppercase">{{ item['name'] }}</p>
+          </div>
           {% endfor %}
         </div>
         <form method="post" action="/entregar_todo">
-          <input type="hidden" name="cuenta" value="{{ data.account_name }}">
+          <input type="hidden" name="cuenta" value="{{ data['account_name'] }}">
           <button type="submit" class="w-full py-3 bg-slate-900 hover:bg-green-600 text-white font-black text-xs rounded-xl transition-all flex items-center justify-center gap-2">
             <i data-lucide="check-circle-2" class="w-4 h-4"></i> ORDEN LISTA
           </button>
@@ -481,11 +487,24 @@ TEMPLATE_COCINA = """
       </div>
     </div>
     {% endfor %}
+
+
+    {# Lógica simple para mostrar pantalla vacía si no hay pedidos #}
+    {% if not cuentas %}
+      <div class="col-span-full py-20 flex flex-col items-center justify-center text-slate-600 opacity-40">
+        <i data-lucide="chef-hat" class="w-20 h-20 mb-4"></i>
+        <h3 class="text-2xl font-black uppercase tracking-tighter italic">Cocina Limpia</h3>
+        <p class="text-sm font-bold">No hay ordenes pendientes en este momento</p>
+      </div>
+    {% endif %}
   </main>
+
+
   <script>lucide.createIcons(); setTimeout(() => window.location.reload(), 30000);</script>
 </body>
 </html>
 """
+
 
 
 TEMPLATE_AJUSTES = """

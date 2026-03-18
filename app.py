@@ -622,11 +622,11 @@ def cocina():
 
     # Orden en lista
     sales_list = sorted(grouped.values(), key=lambda x: x["sale_created_at"])
-    return render_template_string(TEMPLATE_COCINA, sales=sales_list)
+    return render_template_string(TEMPLATE_COCINA, sales=sales_list, cuentas=grouped)
 
 
-@app.route("/cocina/toggle", methods=["POST"])
-def cocina_toggle():
+@app.route("/entregar_todo", methods=["POST"])
+def entregar_todo():
     sale_item_id = request.form.get("sale_item_id", type=int)
     if not sale_item_id:
         return redirect(url_for("cocina"))
@@ -1021,6 +1021,18 @@ def exportar():
         download_name=f"historial_{periodo}.xlsx",
     )
 
+@app.route('/eliminar_producto_db/<int:product_id>', methods=['POST'])
+def eliminar_producto_db(product_id):
+    conn = get_conn()
+    try:
+        # Esto borra el producto de la base de datos de Railway
+        conn.execute("DELETE FROM products WHERE id = ?", (product_id,))
+        conn.commit()
+    except Exception as e:
+        print(f"Error al eliminar: {e}")
+    finally:
+        conn.close()
+    return redirect(url_for('ajustes'))
 
 # ============================================================
 # Templates

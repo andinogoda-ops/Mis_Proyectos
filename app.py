@@ -1271,25 +1271,26 @@ TEMPLATE_PRINCIPAL = """
 </html>
 ""”
 
+
 TEMPLATE_AJUSTES = """
 <!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8">
   <title>Ajustes - Sport Spot</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
   <style>
-    * { box-sizing:border-box; font-family: system-ui, sans-serif; }
-    body { margin:0; background: #1b5e20; color:#f5f5f5; }
-    .app-container { max-width: 1200px; margin:0 auto; padding:16px; }
+    body { background: #1b5e20; color: white; font-family: sans-serif; }
+    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
   </style>
 </head>
 <body>
-  <div class="app-container">
-    <h1>Panel de Ajustes</h1>
-    <a href="/">Volver</a>
+  <div class="container">
+    <h1>Configuración</h1>
+    <a href="/" style="color: white;">Volver al Inicio</a>
   </div>
 </body>
+</html>
+"""
 
 
 TEMPLATE_REPORTES = """

@@ -1272,25 +1272,152 @@ TEMPLATE_PRINCIPAL = """
 """
 
 TEMPLATE_AJUSTES = """
-
 <!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <title>Ajustes - Sport Spot</title>
+  <title>Sport Spot | Configuración</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    body { background: #1b5e20; color: white; font-family: sans-serif; }
-    .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap');
+    body { 
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: radial-gradient(circle at top left, #1e293b 0%, #0f172a 100%);
+      min-height: 100vh;
+    }
+    .glass {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
   </style>
 </head>
-<body>
-  <div class="container">
-    <h1>Configuración</h1>
-    <a href="/" style="color: white;">Volver al Inicio</a>
+<body class="text-slate-200 p-4 lg:p-8">
+
+
+<div class="max-w-5xl mx-auto">
+  <header class="flex justify-between items-center mb-8">
+    <div class="flex items-center gap-4">
+      <a href="/" class="p-3 glass rounded-2xl hover:bg-white/10 transition-all text-blue-400">
+        <i data-lucide="arrow-left" class="w-6 h-6"></i>
+      </a>
+      <div>
+        <h1 class="text-2xl font-extrabold text-white">Panel de Control</h1>
+        <p class="text-sm text-slate-400">Gestiona productos, stock y sistema</p>
+      </div>
+    </div>
+  </header>
+
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    
+    <section class="glass rounded-3xl p-6 shadow-2xl">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="bg-blue-500/20 p-2 rounded-lg">
+          <i data-lucide="plus-circle" class="text-blue-400 w-5 h-5"></i>
+        </div>
+        <h2 class="text-lg font-bold">Nuevo Producto</h2>
+      </div>
+
+
+      <form method="post" action="{{ url_for('ajustes') }}" enctype="multipart/form-data" class="space-y-4">
+        <div class="grid grid-cols-2 gap-4">
+          <div class="col-span-2 space-y-1">
+            <label class="text-xs font-bold text-slate-500 uppercase ml-2">Nombre del Producto</label>
+            <input name="name" required class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none transition-all">
+          </div>
+          <div class="space-y-1">
+            <label class="text-xs font-bold text-slate-500 uppercase ml-2">Precio Venta</label>
+            <input type="number" name="sale_price" required class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none transition-all" placeholder="₡">
+          </div>
+          <div class="space-y-1">
+            <label class="text-xs font-bold text-slate-500 uppercase ml-2">Stock Inicial</label>
+            <input type="number" name="stock" required class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm focus:border-blue-500 outline-none transition-all">
+          </div>
+        </div>
+        
+        <div class="space-y-1">
+          <label class="text-xs font-bold text-slate-500 uppercase ml-2">Categoría</label>
+          <select name="category" class="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-sm outline-none focus:border-blue-500">
+            <option value="Comida">Comida</option>
+            <option value="Bebida">Bebida</option>
+            <option value="Snack">Snack</option>
+            <option value="Otro">Otro</option>
+          </select>
+        </div>
+
+
+        <div class="space-y-1">
+          <label class="text-xs font-bold text-slate-500 uppercase ml-2">Imagen del Producto</label>
+          <input type="file" name="image" class="w-full text-xs text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-blue-500 file:text-white hover:file:bg-blue-600 transition-all">
+        </div>
+
+
+        <button type="submit" class="w-full py-4 bg-blue-600 hover:bg-blue-500 text-white font-black rounded-2xl shadow-lg shadow-blue-500/20 transition-all active:scale-[0.98]">
+          GUARDAR PRODUCTO
+        </button>
+      </form>
+    </section>
+
+
+    <section class="glass rounded-3xl p-6 shadow-2xl overflow-hidden flex flex-col">
+      <div class="flex items-center gap-3 mb-6">
+        <div class="bg-amber-500/20 p-2 rounded-lg">
+          <i data-lucide="package" class="text-amber-400 w-5 h-5"></i>
+        </div>
+        <h2 class="text-lg font-bold">Inventario Actual</h2>
+      </div>
+
+
+      <div class="space-y-3 overflow-y-auto max-h-[400px] pr-2 custom-scrollbar">
+        {% for p in products %}
+        <div class="flex justify-between items-center p-3 rounded-2xl bg-white/5 border border-white/5">
+          <div class="flex items-center gap-3">
+            <img src="{{ url_for('product_image', product_id=p['id']) }}" class="w-10 h-10 rounded-lg object-cover">
+            <div>
+              <p class="text-sm font-bold leading-none">{{ p['name'] }}</p>
+              <p class="text-[10px] text-slate-500 uppercase font-bold mt-1">{{ p['category'] }}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-4">
+            <div class="text-right">
+              <p class="text-[10px] font-bold text-slate-500 uppercase">Stock</p>
+              <p class="text-sm font-black {% if p['stock'] < 5 %}text-rose-500 animate-pulse{% else %}text-green-400{% endif %}">
+                {{ p['stock'] }}
+              </p>
+            </div>
+            <form method="post" action="{{ url_for('eliminar_producto_db', product_id=p['id']) }}">
+              <button type="submit" class="p-2 text-slate-600 hover:text-rose-500 transition-colors">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+              </button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+
+
   </div>
+
+
+  <footer class="mt-12 text-center text-slate-600 text-[10px] font-bold tracking-widest uppercase">
+    Sport Spot POS v2.0 &bull; Running on Railway
+  </footer>
+</div>
+
+
+<script>
+  lucide.createIcons();
+</script>
+
+
 </body>
 </html>
-"""
+""”
+
 
 
 TEMPLATE_REPORTES = """

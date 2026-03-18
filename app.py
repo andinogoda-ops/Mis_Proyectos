@@ -1269,10 +1269,10 @@ TEMPLATE_PRINCIPAL = """
 
 </body>
 </html>
-""”
-
+"""
 
 TEMPLATE_AJUSTES = """
+
 <!doctype html>
 <html lang="es">
 <head>

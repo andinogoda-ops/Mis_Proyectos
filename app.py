@@ -1416,8 +1416,7 @@ TEMPLATE_AJUSTES = """
 
 </body>
 </html>
-""”
-
+"""
 
 
 TEMPLATE_REPORTES = """
@@ -1579,72 +1578,137 @@ TEMPLATE_REPORTES = """
 </html>
 """
 
-
 TEMPLATE_COCINA = """
 <!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <title>Cocina · Sport Spot</title>
+  <title>Sport Spot | Panel de Cocina</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    * { box-sizing:border-box; font-family: system-ui, -apple-system, Segoe UI, sans-serif; }
-    body { margin:0; background: radial-gradient(circle at top left, #4caf50 0, #1b5e20 40%, #0f2d1f 100%); color:#f5f5f5; }
-    .app { max-width: 1200px; margin:0 auto; padding:16px; }
-    a { color:#c8e6c9; }
-    h1 { margin: 0 0 10px; font-size: 1.2rem; text-transform: uppercase; letter-spacing:.08em; }
-    .grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
-    .card { background: rgba(3,18,10,0.9); border-radius:18px; padding:14px; border:1px solid rgba(129,199,132,0.35); box-shadow: 0 12px 30px rgba(0,0,0,0.4); }
-    .head { display:flex; justify-content:space-between; gap:10px; align-items:baseline; margin-bottom: 10px; }
-    .sale { font-weight: 900; }
-    .muted { opacity:.85; font-size:.85rem; }
-    .item { background: rgba(0,0,0,.25); border:1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 10px; margin: 8px 0; display:flex; justify-content:space-between; gap: 10px; }
-    .tag { font-size:.72rem; text-transform: uppercase; letter-spacing:.08em; padding: 2px 8px; border-radius: 999px; background: rgba(205,220,57,.12); color:#e6ee9c; display:inline-block; margin-right: 6px;}
-    .btn { border:none; border-radius:999px; padding: 7px 12px; font-size:.82rem; cursor:pointer; white-space:nowrap;}
-    .btn-primary { background: linear-gradient(135deg, #cddc39, #8bc34a); color:#1b5e20; font-weight:800;}
-    .empty { opacity:.85; background: rgba(0,0,0,.25); border:1px solid rgba(255,255,255,0.06); border-radius: 14px; padding: 14px; }
+    @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Plus+Jakarta+Sans:wght@600;800&display=swap');
+    
+    body { 
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #0f172a;
+      background-image: radial-gradient(#1e293b 1px, transparent 1px);
+      background-size: 20px 20px;
+      min-height: 100vh;
+    }
+    .ticket {
+      font-family: 'Space Mono', monospace;
+      background: #ffffff;
+      color: #1a1a1a;
+      position: relative;
+      clip-path: polygon(0% 0%, 100% 0%, 100% 95%, 95% 100%, 85% 95%, 75% 100%, 65% 95%, 55% 100%, 45% 95%, 35% 100%, 25% 95%, 15% 100%, 5% 95%, 0% 100%);
+    }
+    .glass-nav {
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
   </style>
 </head>
-<body>
-<div class="app">
-  <a href="{{ url_for('index') }}">&larr; Volver al POS</a>
-  <h1>Cocina (pendientes de entregar)</h1>
+<body class="text-slate-200">
 
-  {% if sales %}
-    <div class="grid">
-      {% for s in sales %}
-        <div class="card">
-          <div class="head">
-            <div>
-              <div class="sale">Venta #{{ s.sale_id }} · {{ s.account_name }}</div>
-              <div class="muted">Creada: {{ s.sale_created_at[:16].replace('T',' ') }}</div>
-            </div>
-            <div class="muted">Pendientes: {{ s['items']|length }}</div>
-          </div>
 
-          {% for it in s['items'] %}
-            <div class="item">
+  <nav class="glass-nav sticky top-0 z-50 p-4 mb-8">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+      <div class="flex items-center gap-3">
+        <div class="bg-orange-500 p-2 rounded-xl shadow-lg shadow-orange-500/20">
+          <i data-lucide="flame" class="text-white w-6 h-6 animate-pulse"></i>
+        </div>
+        <h1 class="text-xl font-black tracking-tighter text-white uppercase">Ordenes en Cocina</h1>
+      </div>
+      <a href="/" class="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 transition-all text-sm font-bold border border-white/10">
+        <i data-lucide="layout-dashboard" class="w-4 h-4 text-blue-400"></i> Volver al POS
+      </a>
+    </div>
+  </nav>
+
+
+  <main class="max-w-7xl mx-auto px-4 lg:px-8">
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+      {% for nombre_cuenta, data in cuentas.items() %}
+        {% set pendientes = data['items'] | selectattr('delivered', 'equalto', false) | list %}
+        {% if pendientes %}
+        <div class="flex flex-col gap-2 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          <div class="ticket p-5 shadow-2xl rounded-t-sm transform hover:-rotate-1 transition-transform cursor-default">
+            
+            <div class="border-b-2 border-dashed border-slate-300 pb-3 mb-4 flex justify-between items-start">
               <div>
-                <span class="tag">{{ it.category }}</span>
-                <strong>{{ it.name }}</strong>
-                <div class="muted">Ítem #{{ it.sale_item_id }}</div>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-none">Mesa / Cuenta</span>
+                <h2 class="text-xl font-black text-slate-900 leading-none mt-1">{{ nombre_cuenta }}</h2>
               </div>
-              <form method="post" action="{{ url_for('cocina_toggle') }}">
-                <input type="hidden" name="sale_item_id" value="{{ it.sale_item_id }}">
-                <button class="btn btn-primary" type="submit">Marcar entregado</button>
+              <div class="bg-slate-900 text-white p-2 rounded-lg text-xs font-bold">
+                #{{ loop.index }}
+              </div>
+            </div>
+
+
+            <div class="space-y-3 mb-6">
+              {% for item in data['items'] %}
+                {% if not item.delivered %}
+                <div class="flex justify-between items-start">
+                  <div class="flex gap-2">
+                    <span class="font-bold text-slate-400">1x</span>
+                    <div>
+                      <p class="text-sm font-bold text-slate-800 leading-tight uppercase">{{ item.name }}</p>
+                      <p class="text-[9px] text-slate-400 font-bold uppercase tracking-tighter">{{ item.category }}</p>
+                    </div>
+                  </div>
+                </div>
+                {% endif %}
+              {% endfor %}
+            </div>
+
+
+            <div class="pt-4 border-t-2 border-dashed border-slate-300">
+              <form method="post" action="{{ url_for('entregar_todo') }}">
+                <input type="hidden" name="cuenta" value="{{ nombre_cuenta }}">
+                <button type="submit" class="w-full py-3 bg-slate-900 hover:bg-green-600 text-white font-black text-xs rounded-xl transition-all flex items-center justify-center gap-2 group">
+                  <i data-lucide="check-circle-2" class="w-4 h-4 group-hover:scale-125 transition-transform"></i>
+                  ORDEN LISTA
+                </button>
               </form>
             </div>
-          {% endfor %}
+            
+          </div>
+          <p class="text-[10px] text-center text-slate-500 font-bold uppercase tracking-widest">Pendiente desde: {{ data['items'][0]['time'] if data['items'] else 'Ahora' }}</p>
         </div>
+        {% endif %}
       {% endfor %}
+
+
+      {% if not cuentas.values() | map(attribute='items') | map('selectattr', 'delivered', 'equalto', false) | map('list') | map('length') | sum %}
+      <div class="col-span-full py-20 flex flex-col items-center justify-center text-slate-600 opacity-40">
+        <i data-lucide="chef-hat" class="w-20 h-20 mb-4"></i>
+        <h3 class="text-2xl font-black uppercase tracking-tighter italic">Cocina Limpia</h3>
+        <p class="text-sm font-bold">No hay ordenes pendientes en este momento</p>
+      </div>
+      {% endif %}
     </div>
-  {% else %}
-    <div class="empty">✅ No hay ítems pendientes. Todo está entregado.</div>
-  {% endif %}
-</div>
+
+
+  </main>
+
+
+  <script>
+    lucide.createIcons();
+    // Auto-recarga cada 30 segundos para ver ordenes nuevas
+    setTimeout(function(){
+       window.location.reload();
+    }, 30000);
+  </script>
+
+
 </body>
 </html>
 """
+
 
 
 

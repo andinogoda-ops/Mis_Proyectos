@@ -490,9 +490,11 @@ def cobrar():
         )
         sale_id = cur.lastrowid
 
-        for it in items:
-            delivered = 1 if it.get("delivered", 0) else 0
-            delivered_at = now if delivered else None
+                for it in items:
+            # Forzamos que nazca sin entregar (0) para que aparezca en cocina
+            delivered = 0 
+            delivered_at = None
+            
             conn.execute(
                 """
                 INSERT INTO sale_items(sale_id, product_id, name, category, sale_price, cost_price, created_at, delivered, delivered_at)
@@ -506,10 +508,11 @@ def cobrar():
                     it["sale_price"],
                     it["cost_price"],
                     now,
-                    delivered,
+                    delivered, # Aquí irá el 0
                     delivered_at,
                 ),
             )
+
 
         # si ya venía todo entregado, cerramos de una vez
         pending = conn.execute(
@@ -627,35 +630,22 @@ def cocina():
 
 @app.route("/entregar_todo", methods=["POST"])
 def entregar_todo():
-    sale_item_id = request.form.get("sale_item_id", type=int)
-    if not sale_item_id:
-        return redirect(url_for("cocina"))
-
+    sale_id = request.form.get("sale_id", type=int) # Cambiamos 'cuenta' por 'sale_id'
+    if not sale_id:
+        return redirect(url_for('cocina'))
+    
     conn = get_conn()
     try:
-        row = conn.execute(
-            "SELECT id, sale_id, delivered FROM sale_items WHERE id=?;",
-            (sale_item_id,),
-        ).fetchone()
-        if not row:
-            return redirect(url_for("cocina"))
-
-        new_val = 0 if row["delivered"] else 1
-        delivered_at = datetime.now().isoformat() if new_val == 1 else None
-
-        conn.execute(
-            "UPDATE sale_items SET delivered=?, delivered_at=? WHERE id=?;",
-            (new_val, delivered_at, sale_item_id),
-        )
-
-        # si con esto ya no queda nada pendiente, cerramos la venta
-        maybe_close_sale(conn, row["sale_id"])
-
+        now = datetime.now().isoformat()
+        # Marcamos todos los items de esa venta como entregados
+        conn.execute("UPDATE sale_items SET delivered=1, delivered_at=? WHERE sale_id=?", (now, sale_id))
+        # Cerramos la venta
+        conn.execute("UPDATE sales SET status='closed', closed_at=? WHERE id=?", (now, sale_id))
         conn.commit()
     finally:
         conn.close()
+    return redirect(url_for('cocina'))
 
-    return redirect(url_for("cocina"))
 
 
 # ============================================================
